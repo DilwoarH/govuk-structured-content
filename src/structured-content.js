@@ -1,5 +1,5 @@
 'use strict';
-
+require('encoding');
 const html2json = require('html2json').html2json;
 const fetch = require('node-fetch');
 
