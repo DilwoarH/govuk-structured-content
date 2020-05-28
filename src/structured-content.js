@@ -7,11 +7,6 @@ let url = "https://www.gov.uk/api/content/guidance/software-developer";
 
 exports.handler = function(event, context, callback) {
   console.log('DATE! ' + (new Date()));
-  getFiles().then(res => {
-    
-  }).catch(e => {
-    callback(e);
-  });
   fetch(url)
   .then(res => res.json())
   .then(content_item => {
