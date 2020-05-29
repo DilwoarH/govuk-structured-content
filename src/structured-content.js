@@ -5,8 +5,8 @@ const axios = require('axios');
 
 exports.handler = function(event, context, callback) {
   console.log('DATE! ', (new Date()));
-
-  let path = event.queryStringParameters.path;
+  let params = event.queryStringParameters;
+  let path = params.path;
   if (!path) {
     return callback(null, {
       statusCode: 200,
@@ -20,9 +20,10 @@ exports.handler = function(event, context, callback) {
   axios
   .get(url)
   .then(result => {
-    let content_item = result.data;
-    let html = content_item.details.body.replace(/(\r\n|\n|\r)/gm, "");
+    let contentItem = result.data;
+    let html = contentItem.details.body;//.replace(/(\r\n|\n|\r)/gm, "");
     let object = html2json(html);
+    object = params.raw ? object : structureContent(contentItem, object);
     let json = JSON.stringify(object);
     callback(null, {
       statusCode: 200,
@@ -32,4 +33,64 @@ exports.handler = function(event, context, callback) {
   .catch(e => {
     callback(e);
   });
+}
+
+function structureContent(contentItem, object) {
+  let structuredContent = [];
+
+  let currentSection = { 
+    heading: contentItem.title,
+    content: []
+  };
+
+  object.child.forEach(element => {
+    if (element.node == "text") return; 
+
+    switch (element.tag) {
+      case "h2":
+      case "h3":
+        structuredContent.push(currentSection);
+        currentSection = { 
+          heading: element.child[0].text,
+          content: []
+        };
+        break;
+
+      case "div":
+      case "p":
+        currentSection.content.push(getText(element));
+        break;
+      
+      case "ul":
+      case "ol":
+        currentSection.content.push(getListItems(element));
+        break
+
+      default:
+        currentSection.content.push(element);
+        break;
+    }
+  });
+
+  structuredContent.push(currentSection);
+  return structuredContent;
+}
+
+function getText(element) {
+  let itemText = "";
+
+  element.child.forEach( child => {
+    if (child.node == "text") itemText += child.text;
+    else if ( child.node == "element" ) itemText += getText(child); 
+  });
+
+  return itemText.trim();
+}
+
+function getListItems(list) {
+  let items = [];
+  list.child.forEach( item => {
+    if (item.tag == "li") items.push(getText(item));
+  });
+  return items;
 }
