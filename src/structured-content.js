@@ -3,11 +3,19 @@ require('encoding');
 const html2json = require('html2json').html2json;
 const axios = require('axios');
 
-let url = "https://www.gov.uk/api/content/guidance/software-developer";
-
 exports.handler = function(event, context, callback) {
-  console.log('DATE! ' + (new Date()));
-  console.log('URL! ' + url);
+  console.log('DATE! ', (new Date()));
+
+  let path = event.queryStringParameters.path;
+  if (!path) {
+    return callback(null, {
+      statusCode: 200,
+      body: JSON.stringify({error: "Please provide a path for example, ?path=/benefits-calculators"})
+    });
+  }
+
+  let url = `https://www.gov.uk/api/content${path}`;
+  console.log('URL', url);
 
   axios
   .get(url)
