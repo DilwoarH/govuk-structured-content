@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "encoding": "^0.1.12",
     "html2json": "^1.0.2",
-    "netlify-lambda": "^1.6.3",
-    "node-fetch": "^2.6.0"
+    "netlify-lambda": "^1.6.3"
   }
 }
