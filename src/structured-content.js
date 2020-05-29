@@ -15,7 +15,7 @@ exports.handler = function(event, context, callback) {
     let content_item = result.data;
     let html = content_item.details.body.replace(/(\r\n|\n|\r)/gm, "");
     let object = html2json(html);
-    let json = JSON.stringify(object, null, 2);
+    let json = JSON.stringify(object);
     callback(null, {
       statusCode: 200,
       body: json
