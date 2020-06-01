@@ -23,7 +23,7 @@ exports.handler = function(event, context, callback) {
     let contentItem = result.data;
     let html = contentItem.details.body;//.replace(/(\r\n|\n|\r)/gm, "");
     let object = html2json(html);
-    object = params.raw ? object : structureContent(contentItem, object);
+    object = params.raw ? object : getStructuredContent(contentItem.title, object);
     let json = JSON.stringify(object);
     callback(null, {
       statusCode: 200,
@@ -35,11 +35,11 @@ exports.handler = function(event, context, callback) {
   });
 }
 
-function structureContent(contentItem, object) {
+function getStructuredContent(title, object) {
   let structuredContent = [];
 
   let currentSection = { 
-    heading: contentItem.title,
+    heading: title,
     content: []
   };
 
@@ -61,7 +61,7 @@ function structureContent(contentItem, object) {
         break;
 
       case "div":
-        currentSection.content.push(structureContent({title: currentSection.heading}, element));
+        currentSection.content.push(getStructuredContent(currentSection.heading, element));
         break;
 
       case "ul":
