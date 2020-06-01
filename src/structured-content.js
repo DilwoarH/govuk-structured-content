@@ -56,11 +56,14 @@ function structureContent(contentItem, object) {
         };
         break;
 
-      case "div":
       case "p":
         currentSection.content.push(getText(element));
         break;
-      
+
+      case "div":
+        currentSection.content.push(structureContent({title: currentSection.heading}, element));
+        break;
+
       case "ul":
       case "ol":
         currentSection.content.push(getListItems(element));
