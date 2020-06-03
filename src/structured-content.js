@@ -51,7 +51,7 @@ function getStructuredContent(title, object) {
       case "h3":
         structuredContent.push(currentSection);
         currentSection = { 
-          heading: element.child[0].text,
+          heading: getText(element),
           content: []
         };
         break;
@@ -84,7 +84,7 @@ function getText(element) {
 
   element.child.forEach( child => {
     if (child.node == "text") itemText += child.text;
-    else if ( child.node == "element" ) itemText += getText(child); 
+    else if ( child.node == "element" ) itemText += getText(child) + " "; 
   });
 
   return itemText.trim();
