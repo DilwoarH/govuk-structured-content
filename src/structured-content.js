@@ -58,12 +58,12 @@ function getStructuredContent(title, object) {
         };
         break;
 
-      case "p":
-        currentSection.content.push(getText(element));
-        break;
-
       case "div":
         currentSection.content.push(getStructuredContent(currentSection.heading, element));
+        break;
+
+      case "p":
+        currentSection.content.push(getText(element));
         break;
 
       case "ul":
@@ -90,6 +90,7 @@ function getText(element) {
 
   element.child.forEach( child => {
     if (child.node == "text") itemText += child.text;
+    else if ( child.tag == "a" ) itemText += `[${getText(child)}](${child.attr.href})`; 
     else if ( child.node == "element" ) itemText += getText(child) + " "; 
   });
 
