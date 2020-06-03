@@ -69,7 +69,11 @@ function getStructuredContent(title, object) {
       case "ul":
       case "ol":
         currentSection.content.push(getListItems(element));
-        break
+        break;
+
+      case "table":
+        currentSection.content.push(getTableContent(element));
+        break;
 
       default:
         currentSection.content.push(element);
@@ -98,4 +102,26 @@ function getListItems(list) {
     if (item.tag == "li") items.push(getText(item));
   });
   return items;
+}
+
+function getTableContent(table) {
+  let result = [];
+  table.child.forEach( element => {
+    if (element.tag == "tbody") {
+      element.child.forEach( row => {
+        if (row.tag == "tr") {
+          let result_row = [];
+          row.child.forEach( column => {
+            if (column.tag == "td") {
+              result_row.push(getText(column));
+            }
+          })
+          result.push(result_row);
+        }
+      });
+    }
+  });
+
+
+  return result;
 }
