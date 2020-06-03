@@ -47,8 +47,10 @@ function getStructuredContent(title, object) {
     if (element.node == "text") return; 
 
     switch (element.tag) {
+      case "h1":
       case "h2":
       case "h3":
+      case "h4":
         structuredContent.push(currentSection);
         currentSection = { 
           heading: getText(element),
