@@ -75,6 +75,10 @@ function getStructuredContent(title, object) {
         currentSection.content.push(getTableContent(element));
         break;
 
+      case "aside":
+        currentSection.content.push(getText(element));
+        break;
+
       default:
         currentSection.content.push(element);
         break;
